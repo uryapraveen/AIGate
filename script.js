@@ -1,3 +1,21 @@
+function renderEntries() {
+  const listContainer = document.getElementById("entriesList");
+  listContainer.innerHTML = "";
+
+  let entries = [];
+  try {
+    entries = JSON.parse(localStorage.getItem("gateScores")) || [];
+  } catch (err) {
+    entries = [];
+  }
+
+  entries.forEach((entry) => {
+    const li = document.createElement("li");
+    li.textContent = `${entry.date}—${entry.subject} / ${entry.topic}: ${entry.score}/${entry.totalQuestions}`;
+    listContainer.appendChild(li);
+  });
+}
+
 document.querySelector('form').addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -19,10 +37,8 @@ document.querySelector('form').addEventListener('submit', (e) => {
   entries.push(data);
   localStorage.setItem("gateScores", JSON.stringify(entries));
 
-  console.log("Saved entry:", data);
-
   document.querySelector('form').reset();
-  renderEntries(); 
+  renderEntries();
 });
 
-renderEntries(); 
+renderEntries();

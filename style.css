@@ -10,18 +10,18 @@
   --spacing: 16px;
 }
  
-/* Page background */
 html, body {
   height: 100%;
   margin: 0;
   font-family: system-ui, sans-serif;
   background: linear-gradient(135deg, #0f172a, #1e293b);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing);
 }
  
-/* Centered form card */
 form {
   width: 100%;
   max-width: 360px;
@@ -64,8 +64,6 @@ input:focus, select:focus {
   background: rgba(255,255,255,0.2);
 }
  
-/* Fix: dropdown option list renders on a white background in most browsers,
-   so options need their own explicit dark-on-light styling for readability */
 select option {
   color: #111827;
   background: #ffffff;
@@ -76,8 +74,6 @@ select option:hover {
   background: var(--primary);
   color: #ffffff;
 }
- 
-/* Date input calendar icon is dark by default — invert so it's visible on dark bg */
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
   cursor: pointer;
@@ -109,8 +105,6 @@ button:disabled {
   background: #9ca3af;
   cursor: not-allowed;
 }
- 
-/* Style any links inside the form */
 a {
   color: var(--primary);
   text-decoration: none;
@@ -119,4 +113,50 @@ a {
 button:not(:disabled):focus-visible {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
+.history {
+  width: 100%;
+  max-width: 360px;
+  margin-top: var(--spacing);
+  padding: var(--spacing);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  color: var(--text-primary);
+}
  
+.history h2 {
+  margin: 0 0 var(--spacing);
+  font-size: 1.1rem;
+  text-align: center;
+  color: var(--primary);
+}
+ 
+.history ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+ 
+.history li {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  border-left: 3px solid var(--primary);
+}
+ 
+.history li:last-child {
+  margin-bottom: 0;
+}
+.history ul::-webkit-scrollbar {
+  width: 6px;
+}
+ 
+.history ul::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: var(--radius);
+}
