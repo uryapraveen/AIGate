@@ -1,0 +1,122 @@
+:root {
+  --bg-primary: #1e293b;
+  --bg-card: rgba(255 255 255 / 0.2);
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-focus: #60a5fa;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --radius: 8px;
+  --spacing: 16px;
+}
+ 
+/* Page background */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+/* Centered form card */
+form {
+  width: 100%;
+  max-width: 360px;
+  padding: var(--spacing);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  color: var(--text-primary);
+}
+ 
+h1 {
+  margin: 0 0 var(--spacing);
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--primary);
+}
+ 
+label {
+  display: block;
+  margin-top: var(--spacing);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+ 
+input, select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border: 1px solid var(--text-secondary);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+ 
+input:focus, select:focus {
+  outline: 2px solid var(--primary-focus);
+  outline-offset: 2px;
+  background: rgba(255,255,255,0.2);
+}
+ 
+/* Fix: dropdown option list renders on a white background in most browsers,
+   so options need their own explicit dark-on-light styling for readability */
+select option {
+  color: #111827;
+  background: #ffffff;
+}
+ 
+select option:checked,
+select option:hover {
+  background: var(--primary);
+  color: #ffffff;
+}
+ 
+/* Date input calendar icon is dark by default — invert so it's visible on dark bg */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+ 
+button {
+  width: 100%;
+  margin-top: var(--spacing);
+  padding: 0.625rem;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+ 
+button:hover {
+  background: var(--primary-hover);
+}
+ 
+button:focus {
+  outline: 2px solid var(--primary-focus);
+  outline-offset: 2px;
+}
+ 
+button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+ 
+/* Style any links inside the form */
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+ 
+button:not(:disabled):focus-visible {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+ 
