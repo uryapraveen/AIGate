@@ -11,6 +11,11 @@ app.use(express.static(path.join(__dirname,'public')));
 app.get('/', (req, res) => {
   res.render('index')
 });
+
+app.post('/create',(req,res)=>{
+   console.log(req.body.subject);
+   res.redirect('/');
+})
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000')
 });

@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Gate Prepare</title>
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../style.css">  /*since we already mentioned public in the server.js to find static files so there is no need to mention /public again*/
 </head>
 
 <body>
-    <form>
+    <form action="/create" method="post">
         <h1>Gate Planner</h1>
         <label for="subject">Subject:</label>
         <select id="subject" name="subject">
             <option value="">--Select--</option>
-            <option value="Em">Engineering Mathematics </option>
-            <option value="Dl">Digital Logic</option>
-            <option value="COA">Computer Organization and Architecture</option>
-            <option value="DS">Programming and Data Structures</option>
+            <option value="Engineering Mathematics">Engineering Mathematics </option>
+            <option value="Digital Logic">Digital Logic</option>
+            <option value="Computer Organization and Architecture">Computer Organization and Architecture</option>
+            <option value="Programming and Data Structures">Programming and Data Structures</option>
             <option value="Algorithms">Algorithms</option>
-            <option value="TOC">Theory of Computation</option>
-            <option value="CD">Compiler Design</option>
-            <option value="OS">Operating System</option>
+            <option value="Theory of Computation">Theory of Computation</option>
+            <option value="Compiler Design">Compiler Design</option>
+            <option value="Operating System">Operating System</option>
             <option value="Databases">Databases</option>
-            <option value="CN"> Computer Networks</option>
+            <option value="Computer Networks"> Computer Networks</option>
         </select>
         <label for="topic">Topic:</label>
         <input id="topic" name="topic" placeholder="Enter Your Topic" type="text" required>
@@ -32,12 +32,6 @@
         <label for="date">Date</label>
         <input type="date" id="date" name="date" placeholder="Date">
         <button type="submit" class="Submit">Log Score</button>
-    </form>
-    <div class="history">
-        <h2>Logged Entries</h2>
-        <ul id="entriesList"></ul>
-    </div>
-    <script src="../../script.js"></script>
 </body>
 
 </html>
