@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-
+const fs = require('file');
 const app = express()
 
 app.use(express.json());
@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/create',(req,res)=>{
-   console.log(req.body.subject);
+   res.render('details');
    res.redirect('/');
 })
 app.listen(3000, () => {
