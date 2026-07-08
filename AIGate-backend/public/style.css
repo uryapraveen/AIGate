@@ -21,6 +21,10 @@ html, body {
   justify-content: center;
   gap: var(--spacing);
 }
+
+.container {
+  margin-top: -30px;
+}
  
 form {
   width: 100%;
@@ -78,6 +82,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
   cursor: pointer;
 }
+
+::placeholder {
+    color: white;
+}
  
 button {
   width: 100%;
@@ -100,6 +108,11 @@ button:focus {
   outline: 2px solid var(--primary-focus);
   outline-offset: 2px;
 }
+
+.button{
+  width: 150px;
+  margin-left: 900px;
+}
  
 button:disabled {
   background: #9ca3af;
@@ -108,55 +121,10 @@ button:disabled {
 a {
   color: var(--primary);
   text-decoration: none;
+  margin-top: -10px;
+  margin-left: 1000px;
 }
  
 button:not(:disabled):focus-visible {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-}
-.history {
-  width: 100%;
-  max-width: 360px;
-  margin-top: var(--spacing);
-  padding: var(--spacing);
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  color: var(--text-primary);
-}
- 
-.history h2 {
-  margin: 0 0 var(--spacing);
-  font-size: 1.1rem;
-  text-align: center;
-  color: var(--primary);
-}
- 
-.history ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-height: 240px;
-  overflow-y: auto;
-}
- 
-.history li {
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 0.5rem;
-  background: rgba(255,255,255,0.1);
-  border-radius: var(--radius);
-  font-size: 0.875rem;
-  color: var(--text-primary);
-  border-left: 3px solid var(--primary);
-}
- 
-.history li:last-child {
-  margin-bottom: 0;
-}
-.history ul::-webkit-scrollbar {
-  width: 6px;
-}
- 
-.history ul::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: var(--radius);
 }

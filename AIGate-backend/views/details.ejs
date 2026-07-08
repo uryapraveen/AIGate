@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Gate Prepare</title>
-    <link rel="stylesheet" href="../style.css">  /*since we already mentioned public in the server.js to find static files so there is no need to mention /public again*/
+    <link rel="stylesheet" href="../style.css"> 
 </head>
 
 <body>
-    <div>
-        
+    <div class="container">
+        <form action="/analysis" method="get">
+            <label for="info">Roll No:</label>
+            <input id="info" name="info" type="text" placeholder="Enter Your College Rollno" required>
+            <button>Confirm</button>
+        </form>
     </div>
 </body>
 
