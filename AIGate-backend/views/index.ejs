@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Gate Prepare</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/toast.css">
 </head>
 
 <body>
-    <a href="/analytics"> Get Analysis</a>
-    <div class="container">
-        
-        <form action="/create" method="post">
+    <div id="successMessage" class="toast toast-success hidden">
+        Form submitted successfully! 🎉
+    </div>
+    <div id="errorMessage" class="toast toast-error hidden">
+        Failed to store data. Please try again. ❌
+    </div>
 
+    <a href="/analytics"> Get Analysis</a>
+
+    <div class="container">
+
+        <form action="/create" method="post">
             <h1>Gate Planner</h1>
             <label for="rollno">Roll No.</label>
             <input id="rollno" name="rollno" type="text" placeholder="Your College Roll No." required>
             <label for="subject">Subject:</label>
-            <select id="subject" name="subject">
+            <select id="subject" name="subject" onchange="topicSelector()">
                 <option value="">--Select--</option>
                 <option value="Engineering Mathematics">Engineering Mathematics </option>
                 <option value="Digital Logic">Digital Logic</option>
@@ -29,24 +37,23 @@
                 <option value="Databases">Databases</option>
                 <option value="Computer Networks"> Computer Networks</option>
             </select>
-            <label for="topic">Topic:</label>
-            <input id="topic" name="topic" placeholder="Enter Your Topic" type="text" required>
-            <label for="score">Score:</label>
-            <input id="score" type="number" name="score" placeholder="Score" required>
-            <label for="question">Total Questions</label>
-            <input id="question" name="question" type="number" placeholder="Number of Questions" required>
+            <label for="topic"> Topic: </label>
+            <select id="topic" name="topic" required>
+                <option value="">--Select--</option>
+            </select>
+            <label for="score">Your Score:</label>
+            <input id="score" type="number" name="score" placeholder="Enter Your Score in Exam" required>
+            <label for="question">Total Marks:</label>
+            <input id="question" name="question" type="number" placeholder="Enter the Exam Marks" required>
             <label for="date">Date</label>
             <input type="date" id="date" name="date" placeholder="Date">
             <div class="submit">
-                <button type="submit">Log Score</button>
+                <button type="submit" id="submit">Log Score</button>
             </div>
             <p>1.Use Your Same College Provided Roll Number, So that it will be easy for tracking.</p>
-            <p>2.In the area of Score, mention your marks in a/b format i.e(22/30), like that so it will be easy for analysis.</p>
         </form>
-
-        <script src="../script.js"></script>
     </div>
-
+    <script src="/script.js"></script>
 </body>
 
 </html>
