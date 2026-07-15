@@ -24,7 +24,11 @@ body {
 }
 
 .container {
-  margin-top: -30px;
+  margin-top: -40px;
+}
+
+.diagnosis-card{
+  color: white;
 }
 
 form {
@@ -126,7 +130,7 @@ button:disabled {
 a {
   color: var(--primary);
   text-decoration: none;
-  margin-top: 30px;
+  margin-top: -40px;
   margin-left: 1400px;
 }
 
@@ -136,4 +140,104 @@ button:not(:disabled):focus-visible {
 
 p {
   color: grey;
+}
+.results-header {
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: var(--spacing);
+}
+
+.diagnosis-card,
+.quiz-card {
+  width: 100%;
+  max-width: 720px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 24px 28px;
+  margin-bottom: var(--spacing);
+  line-height: 1.6;
+}
+
+.quiz-card {
+  border-left: 4px solid var(--primary);
+}
+
+.diagnosis-card h2,
+.quiz-card h2 {
+  color: var(--primary-focus);
+  font-size: 1.3rem;
+  margin-top: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 8px;
+}
+
+.diagnosis-card h3,
+.quiz-card h3 {
+  color: var(--primary-focus);
+  font-size: 1.05rem;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.diagnosis-card p,
+.quiz-card p {
+  color: var(--text-secondary);
+}
+
+.diagnosis-card strong,
+.quiz-card strong {
+  color: var(--text-primary);
+}
+
+.diagnosis-card ul,
+.diagnosis-card ol,
+.quiz-card ul,
+.quiz-card ol {
+  color: var(--text-secondary);
+  padding-left: 1.4rem;
+}
+
+.diagnosis-card li,
+.quiz-card li {
+  margin-bottom: 6px;
+}
+
+.diagnosis-card table,
+.quiz-card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+}
+
+.diagnosis-card th,
+.diagnosis-card td,
+.quiz-card th,
+.quiz-card td {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 12px;
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+.diagnosis-card th,
+.quiz-card th {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.diagnosis-card hr,
+.quiz-card hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 20px 0;
+}
+
+.diagnosis-card code,
+.quiz-card code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
 }

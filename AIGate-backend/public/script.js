@@ -47,3 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
  document.addEventListener('submit', ()=>{
     document.getElementById('submit').innerText = 'Saving...';
  });
+
+ document.addEventListener('submit',()=>{
+  document.getElementById('Confirm').innerText = "Fetching..."
+ })
