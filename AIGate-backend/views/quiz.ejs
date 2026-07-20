@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Your GATE Analysis</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <h1>Quiz</h1>
+    <form action="/results" method="post">
+        <input type="hidden" name="quiz_id" value="<%= quizId %>">
+        <ul>
+            <% data.forEach(d=>{ %>
+                <li>
+                    <h2>
+                        <%= d.question_number %>. <%= d.question_text %>
+                    </h2>
+                    <% d.options.forEach((option,index)=>{ %>
+                        <div class="option-row">
+                            <input class="options" type="radio" id="<%= d.question_number %>-<%= index %>"
+                                name="<%= d.question_number %>" value="<%= option %>">
+                            <label class="option_text" for="<%= d.question_number %>-<%= index %>">
+                                <%= option %>
+                            </label>
+                        </div>
+                        <% }); %>
+                </li>
+                <% }); %>
+        </ul>
+        <button class="quiz"> Submit </button>
+    </form>
+</body>
+
+</html>

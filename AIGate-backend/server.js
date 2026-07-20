@@ -61,35 +61,67 @@ Task:
 1. Extract only the subjects/topics marked as weak areas in the analysis above.
 2. Rank them from weakest to least-weak based on the scores mentioned.
 3. Create a mock exam using ONLY these weak-area topics — no other subjects.
-4. Allocate MORE questions to the weakest topic, fewer to the moderately weak ones. Question count must be proportional to weakness (weakest topic gets the most questions).
-5. Each question must be GATE-style (numerical, MCQ, or MSQ) at genuine exam difficulty.
+4. Allocate MORE questions to the weakest topic, fewer to the moderately weak ones. Question count must be proportional to weakness.
+5. Each question must be GATE-style (MCQ only — no MSQ, no numerical-answer type) at genuine exam difficulty.
+6. Provide exactly 4 options per question.
 
 MANDATORY self-check before including any question:
 - Fully solve the question yourself first.
-- Confirm exactly one option is unambiguously correct (for MCQ), or the correct set is unambiguous (for MSQ), or the numerical answer is a single defensible value.
-- If you cannot verify a clean, unambiguous answer, DISCARD that question and silently generate a different one on the same topic instead. Never include a question you are unsure about.
-- Never leave a question in the output where the options don't match your own worked solution.
+- Confirm exactly one of the 4 options is unambiguously correct.
+- If you cannot verify a clean, unambiguous answer, DISCARD that question and generate a different one on the same topic instead. Never include a question you are unsure about.
+- If fewer clean questions are possible for a topic than planned, reduce that topic's count silently rather than including a flawed question.
 
-Output rules — MUST follow exactly:
-- Output ONLY the final quiz and answer key. Do not include reasoning, scratch work, self-corrections, alternate attempts, phrases like "let me re-check" or "I'll assume," or any indication of uncertainty.
-- The answer key must state the final answer and a short explanation only — never show failed attempts or discarded reasoning paths.
-- If, after your internal verification, fewer clean questions are possible for a topic than originally planned, reduce that topic's count silently rather than including a flawed question.
+OUTPUT FORMAT — CRITICAL, FOLLOW EXACTLY:
+Return ONLY a raw JSON array. No markdown code fences, no backticks, no "json" label, no headers, no explanation, no text before or after the array — your entire response must be parseable directly by JSON.parse().
 
-Output format — follow exactly:
-## Mock Exam: Weak Area Focus
-### [Topic Name] (Weakest — X questions)
-Q1. ...
-Q2. ...
-### [Topic Name] (Second weakest — Y questions)
-Q1. ...
-...
-## Answer Key
-Q1. Answer — brief explanation
-...`
+Each element in the array must be an object with exactly this shape:
+{
+  "topic": "string — the subject/topic name",
+  "question_text": "string — the full question",
+  "options": ["string", "string", "string", "string"],
+  "correct_answer": "string — must exactly match one of the four strings in options"
+}
+
+Example of the exact format required (structure only, not real content):
+[{"topic":"Digital Logic","question_text":"...","options":["...","...","...","..."],"correct_answer":"..."}]
+
+Return the array now, with no other text.`
     });
-    const quizHtml = marked.parse(quizResponse.text);
 
-    res.render('results', { diagnosis: diagnosisHtml, quiz: quizHtml });
+    const rawQuizText = quizResponse.text;
+    const cleanedQuizText = rawQuizText
+      .trim()
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/, '')
+      .replace(/```\s*$/, '');
+
+    let quizQuestions;
+    try {
+      quizQuestions = JSON.parse(cleanedQuizText);
+    } catch (err) {
+      console.error('Failed to parse Gemini quiz JSON:', err);
+      console.error('Raw text was:', rawQuizText);
+      return res.status(500).json({
+        success: false,
+        message: 'Quiz generation failed — could not parse AI response. Please try again.'
+      });
+    }
+    const quizId = Date.now();
+
+    const rowsToInsert = quizQuestions.map((q, index) => ({
+      quiz_id: quizId,
+      roll_no: requiredRoll,
+      question_number: index + 1,
+      question_text: q.question_text,
+      options: q.options,
+      correct_answer: q.correct_answer,
+      user_answer: null
+    }));
+
+    const { error: insertError } = await supabase.from('quiz_questions').insert(rowsToInsert);
+    if (insertError) throw insertError;
+
+    res.render('results', { diagnosis: diagnosisHtml, quizId });
 
   } catch (err) {
     console.error(err);
@@ -101,6 +133,62 @@ Q1. Answer — brief explanation
   }
 })
 
+app.get('/quiz/:quizId', async (req, res) => {
+  try {
+    const requiredquizeId = req.params.quizId;
+    const { data: quizData, error } = await supabase.from('quiz_questions').select('*').eq("quiz_id", requiredquizeId);
+    if (error) throw error;
+    res.render('quiz', { data: quizData, quizId: requiredquizeId });
+  }
+  catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'quiz is not formed',
+      error: err.message
+    })
+  }
+
+})
+
+app.post('/results', async (req, res) => {
+  try {
+    const requiredquiz_Id = req.body.quiz_id;
+    const { data: quizData, error } = await supabase.from('quiz_questions').select('*').eq("quiz_id", requiredquiz_Id);
+    if (error) throw error;
+
+    let count = 0;
+
+    for (const q of quizData) {
+      const user_answer = req.body[q.question_number];
+      const correct_answer = q.correct_answer;
+
+      if (user_answer === correct_answer) {
+        count++;
+      }
+
+      const { error: updateError } = await supabase
+        .from('quiz_questions')
+        .update({ user_answer: user_answer })
+        .eq('quiz_id', q.quiz_id)
+        .eq('question_number', q.question_number);
+
+      if (updateError) {
+        console.error('Failed to update row:', updateError);
+      }
+    }
+
+    const total = quizData.length;
+
+    return res.render('score', { count, total, quizData });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'quiz is not formed',
+      error: err.message
+    });
+  }
+});
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000')
 });
