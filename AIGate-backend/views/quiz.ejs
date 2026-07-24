@@ -9,7 +9,7 @@
 <body>
 
     <h1>Quiz</h1>
-    <form action="/results" method="post">
+    <form action="/results/<%= requiredRoll %>" method="post">
         <input type="hidden" name="quiz_id" value="<%= quizId %>">
         <ul>
             <% data.forEach(d=>{ %>

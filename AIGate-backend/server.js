@@ -70,7 +70,7 @@ MANDATORY self-check before including any question:
 - Confirm exactly one of the 4 options is unambiguously correct.
 - If you cannot verify a clean, unambiguous answer, DISCARD that question and generate a different one on the same topic instead. Never include a question you are unsure about.
 - If fewer clean questions are possible for a topic than planned, reduce that topic's count silently rather than including a flawed question.
-
+- If any question involves LaTeX or mathematical notation with backslashes (e.g., \sum, \{, \}, \mid), you MUST escape every single backslash as \\\\ in the JSON output, so it forms valid JSON. Double-check each backslash in mathematical expressions before finalizing your response.
 OUTPUT FORMAT — CRITICAL, FOLLOW EXACTLY:
 Return ONLY a raw JSON array. No markdown code fences, no backticks, no "json" label, no headers, no explanation, no text before or after the array — your entire response must be parseable directly by JSON.parse().
 
@@ -115,13 +115,14 @@ Return the array now, with no other text.`
       question_text: q.question_text,
       options: q.options,
       correct_answer: q.correct_answer,
-      user_answer: null
+      user_answer: null,
+      topic: q.topic,
     }));
 
     const { error: insertError } = await supabase.from('quiz_questions').insert(rowsToInsert);
     if (insertError) throw insertError;
 
-    res.render('results', { diagnosis: diagnosisHtml, quizId });
+    res.render('results', { diagnosis: diagnosisHtml, quizId, requiredRoll });
 
   } catch (err) {
     console.error(err);
@@ -133,12 +134,13 @@ Return the array now, with no other text.`
   }
 })
 
-app.get('/quiz/:quizId', async (req, res) => {
+app.get('/quiz/:quizId/:requiredRoll', async (req, res) => {
   try {
     const requiredquizeId = req.params.quizId;
+    const requiredRoll = req.params.requiredRoll;
     const { data: quizData, error } = await supabase.from('quiz_questions').select('*').eq("quiz_id", requiredquizeId);
     if (error) throw error;
-    res.render('quiz', { data: quizData, quizId: requiredquizeId });
+    res.render('quiz', { data: quizData, quizId: requiredquizeId, requiredRoll });
   }
   catch (err) {
     return res.status(500).json({
@@ -150,13 +152,25 @@ app.get('/quiz/:quizId', async (req, res) => {
 
 })
 
-app.post('/results', async (req, res) => {
+app.post('/results/:requiredRoll', async (req, res) => {
   try {
     const requiredquiz_Id = req.body.quiz_id;
+    const requiredRoll = req.params.requiredRoll;
     const { data: quizData, error } = await supabase.from('quiz_questions').select('*').eq("quiz_id", requiredquiz_Id);
     if (error) throw error;
 
     let count = 0;
+
+    for (const q of quizData) {
+      const user_answer = req.body[q.question_number];
+      const { error: updateError } = await supabase
+        .from('quiz_questions')
+        .update({ user_answer: user_answer })
+        .eq('quiz_id', q.quiz_id)
+        .eq('question_number', q.question_number);
+
+      if (updateError) throw updateError;
+    }
 
     for (const q of quizData) {
       const user_answer = req.body[q.question_number];
@@ -176,10 +190,36 @@ app.post('/results', async (req, res) => {
         console.error('Failed to update row:', updateError);
       }
     }
+    const arr = [];
+    for (const q of quizData) {
+      const topic = q.topic;
+      if (!arr.includes(topic)) {
+        arr.push(topic);
+      }
+    }
+    const values = [];
+    for (const a of arr) {
+      let count1 = 0;
+      let count2 = 0;
+      for (const q of quizData) {
+        if (a === q.topic) {
+          count2++;
+          if (q.user_answer === q.correct_answer) {
+            count1++;
+          }
+        }
+        else {
+          continue;
+        }
+      }
+      const value = { score: count1, total: count2 };
+      values.push(value);
+    }
+
 
     const total = quizData.length;
 
-    return res.render('score', { count, total, quizData });
+    return res.render('score', { count, total, arr, values, requiredRoll });
 
   } catch (err) {
     return res.status(500).json({
@@ -187,6 +227,45 @@ app.post('/results', async (req, res) => {
       message: 'quiz is not formed',
       error: err.message
     });
+  }
+});
+
+app.post('/add', async (req, res) => {
+  try {
+    const requiredRoll = req.body.requiredRoll;
+    const arr = JSON.parse(req.body.arr);
+    const values = JSON.parse(req.body.values);
+    const arr1 = [];
+    const seperateData = arr.map(item => {
+      const parts = item.split('(');
+      const mainsubject = parts[0].trim();
+      const subtopic = parts[1].replace(')', '').trim();
+      const value = { subject: mainsubject, topic: subtopic }
+      arr1.push(value);
+    })
+
+    for (let index = 0; index < arr.length; index++) {
+      const subjectName = arr1[index].subject;
+      const topicsName = arr1[index].topic;
+      const scoreObj = values[index];
+
+      const rowData = {
+        roll_no: requiredRoll,
+        subject: subjectName,
+        topic: topicsName,
+        score: scoreObj.score,
+        total_questions: scoreObj.total,
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      const { error } = await supabase.from('details').insert([rowData]);
+      if (error) throw error;
+    }
+
+    return res.redirect('/?success=true');
+  } catch (err) {
+    console.error("Error adding scores to database:", err);
+    return res.redirect('/?success=false');
   }
 });
 app.listen(3000, () => {

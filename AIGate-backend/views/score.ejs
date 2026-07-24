@@ -7,10 +7,21 @@
 </head>
 
 <body>
-
     <h1>Quiz Results</h1>
     <h2> You Scored Marks of <%= count %> for a total of <%= total %></h2>
-    
+    <h1>Subject Wise Marks</h1>
+    <% arr.forEach((a,index)=>{ %>
+           <h1><%= a %></h1>
+           <h2>Your Score:<%= values[index].score %></h2>
+            <h2>Total Score: <%= values[index].total %></h2>
+    <% })%>
+
+<form action="/add" method="POST">
+    <input type="hidden" name="requiredRoll" value="<%= requiredRoll %>">
+    <input type="hidden" name="arr" value="<%= JSON.stringify(arr) %>">
+    <input type="hidden" name="values" value="<%= JSON.stringify(values) %>">
+    <button type="submit" class="quiz">Add Scores to the Database</button>
+</form>
 </body>
 
 </html>
